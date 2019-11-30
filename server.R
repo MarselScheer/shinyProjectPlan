@@ -38,6 +38,16 @@ shinyServer(function(input, output, session) {
     data$pwr <- import_plan(inFile$datapath, session)
   })
   
+  output$gantt.ui <- renderUI({
+    dt <- data$pwr
+    if (is.null(dt)) {
+      N <- 5
+    } else {
+      N <- nrow(dt)
+    }
+    plotOutput("gantt", height = N * 15)
+  })
+  
   output$gantt <- renderPlot({
     logger::log_debug()
 
