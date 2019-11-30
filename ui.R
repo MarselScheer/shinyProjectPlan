@@ -21,6 +21,7 @@ shinyUI(
       column(1, textInput("section_rex", label = "Filter (Section): ", value = "*")),
       column(1, textInput("task_rex", label = "Filter (Task): ", value = "*")),
       column(1, textInput("resource_rex", label = "Filter (Resource): ", value = "*"))),
+    actionButton("clear_filter", "Clear filter"),
     p("Version: 0.0.0.9000", style = "font-size:9px;float:right")
   )
 )

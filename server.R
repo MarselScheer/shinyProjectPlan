@@ -55,6 +55,13 @@ shinyServer(function(input, output, session) {
     
   })
   
+  observeEvent(input$clear_filter, {
+    updateTextInput(session = session, inputId = "project_rex", value = "*")
+    updateTextInput(session = session, inputId = "section_rex", value = "*")
+    updateTextInput(session = session, inputId = "task_rex", value = "*")
+    updateTextInput(session = session, inputId = "resource_rex", value = "*")
+  })
+  
   output$gantt.ui <- renderUI({
     dt <- data$pwr
     if (is.null(dt)) {
