@@ -41,10 +41,19 @@ shinyServer(function(input, output, session) {
   output$gantt <- renderPlot({
     logger::log_debug()
 
-    dt <- data$pwr
+    dt <- data.table::copy(data$pwr)
     if (is.null(dt)) {
        return(ggplot())
     }
-    projectPlan::gantt_by_sections(data$pwr)    
+    
+    dt <- dt[grepl(pattern = input$project_rex, x = project)]
+    dt <- dt[grepl(pattern = input$section_rex, x = section)]
+    dt <- dt[grepl(pattern = input$task_rex, x = task)]
+    dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
+    if (nrow(dt) == 0) {
+      return(ggplot())
+    }
+    
+    projectPlan::gantt_by_sections(dt)    
   })
 })
