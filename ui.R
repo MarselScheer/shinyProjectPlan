@@ -13,7 +13,8 @@ shinyUI(
                                min    = "2001-01-01",
                                max    = "2012-12-21",
                                format = "yyyy-mm-dd",
-                               separator = " - "))
+                               separator = " - ")),
+      actionButton("reset_date_range", "Reset date range")
     ),
     uiOutput("gantt.ui"),
     fluidRow(

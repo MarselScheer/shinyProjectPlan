@@ -30,6 +30,16 @@ init_logger <- function() {
   log_layout(layout_glue_generator(format = '{node}/{pid}/{call} {time} {level}: {msg}'))
 }
 
+init_date_range <- function(session, pp) {
+  min_date <- min(pp$time_start) - 14
+  max_date <- max(pp$time_end) + 14
+  updateDateRangeInput(session, "gantt_date_range", 
+                       min = min_date,
+                       max = max_date,
+                       start = max(min_date, lubridate::as_date(lubridate::now()) - 7),
+                       end = min(max_date, lubridate::as_date(lubridate::now()) + 14))
+}
+
 shinyServer(function(input, output, session) {
 
   init_logger()
@@ -45,14 +55,11 @@ shinyServer(function(input, output, session) {
       return(NULL)
     
     data$pwr <- import_plan(inFile$datapath, session)
-    min_date <- min(data$pwr$time_start) - 14
-    max_date <- max(data$pwr$time_end) + 14
-    updateDateRangeInput(session, "gantt_date_range", 
-                      min = min_date,
-                      max = max_date,
-                      start = max(min_date, lubridate::as_date(lubridate::now()) - 7),
-                      end = min(max_date, lubridate::as_date(lubridate::now()) + 14))
-    
+    init_date_range(session, data$pwr)
+  })
+
+  observeEvent(input$reset_date_range, {
+    init_date_range(session, data$pwr)
   })
   
   observeEvent(input$clear_filter, {
