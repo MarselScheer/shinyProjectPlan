@@ -15,6 +15,14 @@ import_plan <- function(fName, session) {
   
 }
 
+filter_plan <- function(dt, input) {
+  dt <- data.table::copy(dt)[grepl(pattern = input$project_rex, x = project)]
+  dt <- dt[grepl(pattern = input$section_rex, x = section)]
+  dt <- dt[grepl(pattern = input$task_rex, x = task)]
+  dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
+  dt
+}
+
 #' Initialize the logger
 init_logger <- function() {
   logger::log_threshold(logger::DEBUG)
@@ -46,10 +54,7 @@ shinyServer(function(input, output, session) {
        return(ggplot())
     }
     
-    dt <- dt[grepl(pattern = input$project_rex, x = project)]
-    dt <- dt[grepl(pattern = input$section_rex, x = section)]
-    dt <- dt[grepl(pattern = input$task_rex, x = task)]
-    dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
+    dt <- filter_plan(dt, input)
     if (nrow(dt) == 0) {
       return(ggplot())
     }
