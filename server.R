@@ -20,6 +20,7 @@ filter_plan <- function(dt, input) {
   dt <- dt[grepl(pattern = input$section_rex, x = section)]
   dt <- dt[grepl(pattern = input$task_rex, x = task)]
   dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
+  dt <- dt[input$gantt_date_range[1] < time_start & time_end < input$gantt_date_range[2]]
   dt
 }
 
@@ -44,6 +45,14 @@ shinyServer(function(input, output, session) {
       return(NULL)
     
     data$pwr <- import_plan(inFile$datapath, session)
+    min_date <- min(data$pwr$time_start) - 14
+    max_date <- max(data$pwr$time_end) + 14
+    updateDateRangeInput(session, "gantt_date_range", 
+                      min = min_date,
+                      max = max_date,
+                      start = max(min_date, lubridate::as_date(lubridate::now()) - 7),
+                      end = min(max_date, lubridate::as_date(lubridate::now()) + 14))
+    
   })
   
   output$gantt <- renderPlot({
