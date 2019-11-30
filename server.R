@@ -74,9 +74,9 @@ shinyServer(function(input, output, session) {
     if (is.null(dt)) {
       N <- 5
     } else {
-      N <- nrow(dt)
+      N <- nrow(filter_plan(dt, input))
     }
-    plotOutput("gantt", height = N * 15)
+    plotOutput("gantt", height = N * 25)
   })
   
   output$gantt <- renderPlot({
