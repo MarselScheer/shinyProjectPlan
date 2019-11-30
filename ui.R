@@ -15,7 +15,7 @@ shinyUI(
                                format = "yyyy-mm-dd",
                                separator = " - "))
     ),
-    plotOutput("gantt"),
+    uiOutput("gantt.ui"),
     fluidRow(
       column(1, textInput("project_rex", label = "Filter (Project): ", value = "*")),
       column(1, textInput("section_rex", label = "Filter (Section): ", value = "*")),
