@@ -15,7 +15,8 @@ shinyUI(
                                format = "yyyy-mm-dd",
                                separator = " - ")),
       actionButton("reset_date_range", "Reset date range"),
-      actionButton("ab_complete_date_range", "Complete date range")
+      actionButton("ab_complete_date_range", "Complete date range"),
+      checkboxInput("cb_complete_tasks", "Hide complete tasks")
     ),
     uiOutput("gantt.ui"),
     fluidRow(

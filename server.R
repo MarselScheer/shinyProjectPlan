@@ -21,6 +21,11 @@ filter_plan <- function(dt, input) {
   dt <- dt[grepl(pattern = input$task_rex, x = task)]
   dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
   dt <- dt[input$gantt_date_range[1] < time_start & time_end < input$gantt_date_range[2]]
+  
+  if (input$cb_complete_tasks) {
+    dt <- dt[progress != 100]  
+  }
+  
   dt
 }
 
