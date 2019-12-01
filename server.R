@@ -36,8 +36,8 @@ init_date_range <- function(session, pp) {
   updateDateRangeInput(session, "gantt_date_range", 
                        min = min_date,
                        max = max_date,
-                       start = max(min_date, lubridate::as_date(lubridate::now()) - 7),
-                       end = min(max_date, lubridate::as_date(lubridate::now()) + 14))
+                       start = max(min_date, lubridate::as_date(lubridate::now()) - 30),
+                       end = min(max_date, lubridate::as_date(lubridate::now()) + 60))
 }
 
 show_max_date_range <- function(session, pp) {
