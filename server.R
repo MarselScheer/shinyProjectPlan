@@ -40,6 +40,15 @@ init_date_range <- function(session, pp) {
                        end = min(max_date, lubridate::as_date(lubridate::now()) + 14))
 }
 
+show_max_date_range <- function(session, pp) {
+  min_date <- min(pp$time_start) - 14
+  max_date <- max(pp$time_end) + 14
+  updateDateRangeInput(session, "gantt_date_range", 
+                       min = min_date,
+                       max = max_date,
+                       start = min_date,
+                       end = max_date)
+}
 shinyServer(function(input, output, session) {
 
   init_logger()
@@ -61,6 +70,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$reset_date_range, {
     init_date_range(session, data$pwr)
   })
+
+  observeEvent(input$ab_complete_date_range, {
+    show_max_date_range(session, data$pwr)
+  })
   
   observeEvent(input$clear_filter, {
     updateTextInput(session = session, inputId = "project_rex", value = "*")
@@ -76,7 +89,7 @@ shinyServer(function(input, output, session) {
     } else {
       N <- nrow(filter_plan(dt, input))
     }
-    plotOutput("gantt", height = N * 25)
+    plotOutput("gantt", height = 100 + N * 25)
   })
   
   output$gantt <- renderPlot({
