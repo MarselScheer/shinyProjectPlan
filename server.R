@@ -3,6 +3,7 @@ library(ggplot2)
 library(data.table)
 library(logger)
 library(projectPlan)
+library(dplyr)
 
 import_plan <- function(fName, session) {
   logger::log_debug()
@@ -16,11 +17,32 @@ import_plan <- function(fName, session) {
 }
 
 filter_plan <- function(dt, input) {
+  logger::log_debug()
   dt <- data.table::copy(dt)[grepl(pattern = input$project_rex, x = project)]
   dt <- dt[grepl(pattern = input$section_rex, x = section)]
   dt <- dt[grepl(pattern = input$task_rex, x = task)]
   dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
-  dt <- dt[input$gantt_date_range[1] < time_start & time_end < input$gantt_date_range[2]]
+  
+  if (input$project_nrex != "") {
+    dt <- dt[!grepl(pattern = input$project_nrex, x = project)]  
+  }
+  if (input$section_nrex != "") {
+    dt <- dt[!grepl(pattern = input$section_nrex, x = section)]
+  }
+  if (input$task_nrex != "") {
+    dt <- dt[!grepl(pattern = input$task_nrex, x = task)]
+  }
+  if (input$resource_nrex != "") {
+    dt <- dt[!grepl(pattern = input$resource_nrex, x = resource)]
+  }
+  
+
+  dt <- dt[input$sl_lower_date <= time_end & time_start <= input$sl_upper_date]
+  
+  if (input$cb_complete_tasks) {
+    dt <- dt[progress != 100]  
+  }
+  
   dt
 }
 
@@ -31,23 +53,25 @@ init_logger <- function() {
 }
 
 init_date_range <- function(session, pp) {
+  logger::log_debug()
   min_date <- min(pp$time_start) - 14
   max_date <- max(pp$time_end) + 14
-  updateDateRangeInput(session, "gantt_date_range", 
-                       min = min_date,
-                       max = max_date,
-                       start = max(min_date, lubridate::as_date(lubridate::now()) - 7),
-                       end = min(max_date, lubridate::as_date(lubridate::now()) + 14))
+  updateSliderInput(session, "sl_lower_date", 
+                    min = min_date, 
+                    max = max_date, 
+                    value = max(min_date, lubridate::as_date(lubridate::now()) - 30))
+  updateSliderInput(session, "sl_upper_date", 
+                    min = min_date, 
+                    max = max_date, 
+                    value = min(max_date, lubridate::as_date(lubridate::now()) + 60))
 }
 
 show_max_date_range <- function(session, pp) {
+  logger::log_debug()
   min_date <- min(pp$time_start) - 14
   max_date <- max(pp$time_end) + 14
-  updateDateRangeInput(session, "gantt_date_range", 
-                       min = min_date,
-                       max = max_date,
-                       start = min_date,
-                       end = max_date)
+  updateSliderInput(session, "sl_lower_date", value = min_date)
+  updateSliderInput(session, "sl_upper_date", value = max_date)
 }
 shinyServer(function(input, output, session) {
 
@@ -81,8 +105,15 @@ shinyServer(function(input, output, session) {
     updateTextInput(session = session, inputId = "task_rex", value = "*")
     updateTextInput(session = session, inputId = "resource_rex", value = "*")
   })
+  observeEvent(input$clear_exclu_filter, {
+    updateTextInput(session = session, inputId = "project_nrex", value = "")
+    updateTextInput(session = session, inputId = "section_nrex", value = "")
+    updateTextInput(session = session, inputId = "task_nrex", value = "")
+    updateTextInput(session = session, inputId = "resource_nrex", value = "")
+  })
   
   output$gantt.ui <- renderUI({
+    logger::log_debug()
     dt <- data$pwr
     if (is.null(dt)) {
       N <- 5
