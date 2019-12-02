@@ -136,6 +136,6 @@ shinyServer(function(input, output, session) {
       return(ggplot())
     }
     
-    projectPlan::gantt_by_sections(dt)    
+    projectPlan::gantt_by_sections(dt, show_dependencies = TRUE, text_size = input$ni_font_size)    
   })
 })

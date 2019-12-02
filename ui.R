@@ -17,7 +17,8 @@ shinyUI(
                   max = lubridate::as_date(lubridate::now()) + 60),
       actionButton("reset_date_range", "Reset date range"),
       actionButton("ab_complete_date_range", "Complete date range"),
-      checkboxInput("cb_complete_tasks", "Hide complete tasks")
+      checkboxInput("cb_complete_tasks", "Hide complete tasks"),
+      numericInput("ni_font_size", "Font size", value = 4, min = 1, max = 10, step = 1)
     ),
     uiOutput("gantt.ui"),
     fluidRow(
