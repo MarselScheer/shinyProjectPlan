@@ -3,6 +3,7 @@ library(ggplot2)
 library(data.table)
 library(logger)
 library(projectPlan)
+library(dplyr)
 
 import_plan <- function(fName, session) {
   logger::log_debug()
@@ -55,8 +56,14 @@ init_date_range <- function(session, pp) {
   logger::log_debug()
   min_date <- min(pp$time_start) - 14
   max_date <- max(pp$time_end) + 14
-  updateSliderInput(session, "sl_lower_date", min = min_date, max = max_date)
-  updateSliderInput(session, "sl_upper_date", min = min_date, max = max_date)
+  updateSliderInput(session, "sl_lower_date", 
+                    min = min_date, 
+                    max = max_date, 
+                    value = max(min_date, lubridate::as_date(lubridate::now()) - 30))
+  updateSliderInput(session, "sl_upper_date", 
+                    min = min_date, 
+                    max = max_date, 
+                    value = min(max_date, lubridate::as_date(lubridate::now()) + 60))
 }
 
 show_max_date_range <- function(session, pp) {
