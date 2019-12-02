@@ -21,6 +21,21 @@ filter_plan <- function(dt, input) {
   dt <- dt[grepl(pattern = input$section_rex, x = section)]
   dt <- dt[grepl(pattern = input$task_rex, x = task)]
   dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
+  
+  if (input$project_nrex != "") {
+    dt <- dt[!grepl(pattern = input$project_nrex, x = project)]  
+  }
+  if (input$section_nrex != "") {
+    dt <- dt[!grepl(pattern = input$section_nrex, x = section)]
+  }
+  if (input$task_nrex != "") {
+    dt <- dt[!grepl(pattern = input$task_nrex, x = task)]
+  }
+  if (input$resource_nrex != "") {
+    dt <- dt[!grepl(pattern = input$resource_nrex, x = resource)]
+  }
+  
+
   dt <- dt[input$sl_lower_date <= time_end & time_start <= input$sl_upper_date]
   
   if (input$cb_complete_tasks) {
@@ -82,6 +97,12 @@ shinyServer(function(input, output, session) {
     updateTextInput(session = session, inputId = "section_rex", value = "*")
     updateTextInput(session = session, inputId = "task_rex", value = "*")
     updateTextInput(session = session, inputId = "resource_rex", value = "*")
+  })
+  observeEvent(input$clear_exclu_filter, {
+    updateTextInput(session = session, inputId = "project_nrex", value = "")
+    updateTextInput(session = session, inputId = "section_nrex", value = "")
+    updateTextInput(session = session, inputId = "task_nrex", value = "")
+    updateTextInput(session = session, inputId = "resource_nrex", value = "")
   })
   
   output$gantt.ui <- renderUI({

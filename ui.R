@@ -26,6 +26,12 @@ shinyUI(
       column(1, textInput("task_rex", label = "Filter (Task): ", value = "*")),
       column(1, textInput("resource_rex", label = "Filter (Resource): ", value = "*"))),
     actionButton("clear_filter", "Clear filter"),
+    fluidRow(
+      column(1, textInput("project_nrex", label = "Exclu (Project): ", value = "")),
+      column(1, textInput("section_nrex", label = "Exclu (Section): ", value = "")),
+      column(1, textInput("task_nrex", label = "Exclu (Task): ", value = "")),
+      column(1, textInput("resource_nrex", label = "Exclu (Resource): ", value = ""))),
+    actionButton("clear_exclu_filter", "Clear exclude filter"),
     p("Version: 0.0.0.9000", style = "font-size:9px;float:right")
   )
 )
