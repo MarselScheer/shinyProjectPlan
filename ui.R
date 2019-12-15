@@ -16,10 +16,10 @@ ui <- dashboardPage(
                 max = lubridate::as_date(lubridate::now()) + 60),
     actionButton("reset_date_range", "Reset date range"),
     actionButton("ab_complete_date_range", "Complete date range"),
-    checkboxInput("cb_complete_tasks", "Hide complete tasks"),
-    checkboxInput("cb_unscheduled_tasks", "Hide unscheduled tasks"),
+    checkboxInput("cb_complete_tasks", "Hide complete tasks", value = TRUE),
+    checkboxInput("cb_unscheduled_tasks", "Hide unscheduled tasks", value = TRUE),
     checkboxInput("cb_aborted_tasks", "Hide aborted tasks", value = TRUE),
-    checkboxInput("cb_await_tasks", "Hide waiting tasks"),
+    checkboxInput("cb_await_tasks", "Hide waiting tasks", value = TRUE),
     checkboxInput("cb_withstatus_tasks", "Keep tasks with status"),
     numericInput("ni_font_size", "Font size", value = 4, min = 1, max = 10, step = 1),
     
