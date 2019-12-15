@@ -148,6 +148,10 @@ shinyServer(function(input, output, session) {
       return(ggplot())
     }
     
-    projectPlan::gantt_by_sections(dt, show_dependencies = TRUE, text_size = input$ni_font_size)    
+    projectPlan::gantt_by_sections(
+      dt, 
+      show_dependencies = TRUE, 
+      text_size = input$ni_font_size,
+      xlim = c(input$sl_lower_date, input$sl_upper_date))    
   })
 })
