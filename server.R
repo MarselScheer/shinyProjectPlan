@@ -140,7 +140,7 @@ shinyServer(function(input, output, session) {
     eventExpr = input$gantt_click,
     handlerExpr = {
       idx <- round(input$gantt_click$y)
-      filter_dt <- filter_plan(data$pwr, input)
+      filter_dt <- data$plot_data
       idx <- rev(1:nrow(filter_dt))[idx]
       sub <- filter_dt[idx]
       output$microtasks <- renderText({sub$microtasks})
@@ -174,10 +174,14 @@ shinyServer(function(input, output, session) {
       return(ggplot())
     }
     
-    projectPlan::gantt_by_sections(
+    p <- projectPlan::gantt_by_sections(
       dt, 
       show_dependencies = TRUE, 
       text_size = input$ni_font_size,
       xlim = c(input$sl_lower_date, input$sl_upper_date))    
+    
+    # this way we capture the ordering of the plot
+    data$plot_data <- p$data
+    p
   })
 })
