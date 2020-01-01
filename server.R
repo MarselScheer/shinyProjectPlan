@@ -5,6 +5,12 @@ library(logger)
 library(projectPlan)
 library(dplyr)
 
+h_wrap_comments <- function(comment) {
+  comment <- unlist(strsplit(comment, "\n", fixed = TRUE))
+  comment <- strwrap(comment, width = 80, exdent = 2)
+  paste(comment, collapse = "\n")
+}
+
 import_plan <- function(fName, session) {
   logger::log_debug()
   if (!file.exists(fName))
@@ -14,6 +20,7 @@ import_plan <- function(fName, session) {
   preplan <- projectPlan::wrangle_raw_plan(raw_plan)
   time_lines <- projectPlan::calculate_time_lines(preplan)
   time_lines$comments <- projectPlan:::h.rd_remove_unnessary_rows(raw_plan)$comments
+  time_lines$comments <- sapply(time_lines$comments, h_wrap_comments)
   time_lines
   
 }
