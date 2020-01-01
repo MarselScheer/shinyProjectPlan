@@ -42,6 +42,18 @@ filter_plan <- function(dt, input) {
   if (input$cb_complete_tasks) {
     dt <- dt[progress != 100]  
   }
+  if (input$cb_aborted_tasks) {
+    dt <- dt[aborted == FALSE]
+  }
+  if (input$cb_await_tasks) {
+    dt <- dt[waiting == FALSE]
+  }
+  if (input$cb_unscheduled_tasks){
+    dt <- dt[unscheduled == FALSE]
+  }
+  if (input$cb_withstatus_tasks) {
+    dt <- dt[aborted == TRUE | waiting == TRUE | unscheduled == TRUE | progress == 100]
+  }
   
   dt
 }
@@ -136,6 +148,10 @@ shinyServer(function(input, output, session) {
       return(ggplot())
     }
     
-    projectPlan::gantt_by_sections(dt)    
+    projectPlan::gantt_by_sections(
+      dt, 
+      show_dependencies = TRUE, 
+      text_size = input$ni_font_size,
+      xlim = c(input$sl_lower_date, input$sl_upper_date))    
   })
 })
