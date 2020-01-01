@@ -35,5 +35,12 @@ ui <- dashboardPage(
     textInput("resource_nrex", label = "Exclu (Resource): ", value = ""),
     actionButton("clear_exclu_filter", "Clear exclude filter"),
     p("Version: 0.0.0.9000", style = "font-size:9px;float:right")),
-  dashboardBody(uiOutput("gantt.ui"))
+  
+  
+  dashboardBody(
+    uiOutput("gantt.ui"),
+    p("Microtasks:"),
+    textOutput("microtasks", container = shiny::tags$pre),
+    p("Comments:"),
+    textOutput("comments", container = shiny::tags$pre))
 )

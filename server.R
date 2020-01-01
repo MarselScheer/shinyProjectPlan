@@ -5,6 +5,12 @@ library(logger)
 library(projectPlan)
 library(dplyr)
 
+h_wrap_comments <- function(comment) {
+  comment <- unlist(strsplit(comment, "\n", fixed = TRUE))
+  comment <- strwrap(comment, width = 80, exdent = 2)
+  paste(comment, collapse = "\n")
+}
+
 import_plan <- function(fName, session) {
   logger::log_debug()
   if (!file.exists(fName))
@@ -12,7 +18,13 @@ import_plan <- function(fName, session) {
   
   raw_plan <- projectPlan::import_xlsx(fName)
   preplan <- projectPlan::wrangle_raw_plan(raw_plan)
-  projectPlan::calculate_time_lines(preplan)
+  time_lines <- projectPlan::calculate_time_lines(preplan)
+  
+  raw_plan <- projectPlan:::h.rd_remove_unnessary_rows(raw_plan)
+  time_lines$microtasks <- raw_plan$microtasks
+  time_lines$comments <- raw_plan$comments
+  time_lines$comments <- sapply(time_lines$comments, h_wrap_comments)
+  time_lines
   
 }
 
@@ -123,7 +135,21 @@ shinyServer(function(input, output, session) {
     updateTextInput(session = session, inputId = "task_nrex", value = "")
     updateTextInput(session = session, inputId = "resource_nrex", value = "")
   })
+
+  observeEvent(
+    eventExpr = input$gantt_click,
+    handlerExpr = {
+      idx <- round(input$gantt_click$y)
+      filter_dt <- filter_plan(data$pwr, input)
+      idx <- rev(1:nrow(filter_dt))[idx]
+      sub <- filter_dt[idx]
+      output$microtasks <- renderText({sub$microtasks})
+      output$comments <- renderText({sub$comments})
+    },
+    ignoreInit = FALSE, ignoreNULL = TRUE
+  )
   
+    
   output$gantt.ui <- renderUI({
     logger::log_debug()
     dt <- data$pwr
@@ -132,7 +158,7 @@ shinyServer(function(input, output, session) {
     } else {
       N <- nrow(filter_plan(dt, input))
     }
-    plotOutput("gantt", height = 100 + N * 25)
+    plotOutput("gantt", height = 100 + N * 25, click = "gantt_click")
   })
   
   output$gantt <- renderPlot({
