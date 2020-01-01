@@ -39,6 +39,8 @@ ui <- dashboardPage(
   
   dashboardBody(
     uiOutput("gantt.ui"),
+    p("Microtasks:"),
+    textOutput("microtasks", container = shiny::tags$pre),
     p("Comments:"),
     textOutput("comments", container = shiny::tags$pre))
 )

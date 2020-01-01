@@ -19,7 +19,10 @@ import_plan <- function(fName, session) {
   raw_plan <- projectPlan::import_xlsx(fName)
   preplan <- projectPlan::wrangle_raw_plan(raw_plan)
   time_lines <- projectPlan::calculate_time_lines(preplan)
-  time_lines$comments <- projectPlan:::h.rd_remove_unnessary_rows(raw_plan)$comments
+  
+  raw_plan <- projectPlan:::h.rd_remove_unnessary_rows(raw_plan)
+  time_lines$microtasks <- raw_plan$microtasks
+  time_lines$comments <- raw_plan$comments
   time_lines$comments <- sapply(time_lines$comments, h_wrap_comments)
   time_lines
   
@@ -139,7 +142,9 @@ shinyServer(function(input, output, session) {
       idx <- round(input$gantt_click$y)
       filter_dt <- filter_plan(data$pwr, input)
       idx <- rev(1:nrow(filter_dt))[idx]
-      output$comments <- renderText({filter_dt[idx]$comments})
+      sub <- filter_dt[idx]
+      output$microtasks <- renderText({sub$microtasks})
+      output$comments <- renderText({sub$comments})
     },
     ignoreInit = FALSE, ignoreNULL = TRUE
   )
