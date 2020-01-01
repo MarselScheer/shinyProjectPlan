@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
     ranger \
     git \
     tig \ 
+    && R -e "install.packages(c('shiny', 'shinydashboard', 'remotes'), repos='$MRAN')" \
     && R -e "remotes::install_github('MarselScheer/projectPlan', ref = 'development')" \
     && ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime \
     && git config --global user.email "scheer@freescience.de" \
