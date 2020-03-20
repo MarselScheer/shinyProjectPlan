@@ -30,10 +30,18 @@ import_plan <- function(fName, session) {
 
 filter_plan <- function(dt, input) {
   logger::log_debug()
+  
   dt <- data.table::copy(dt)[grepl(pattern = input$project_rex, x = project)]
   dt <- dt[grepl(pattern = input$section_rex, x = section)]
   dt <- dt[grepl(pattern = input$task_rex, x = task)]
   dt <- dt[grepl(pattern = input$resource_rex, x = resource)]
+  dt <- dt[
+    grepl(pattern = input$anything_rex, x = project) |
+      grepl(pattern = input$anything_rex, x = section) |
+      grepl(pattern = input$anything_rex, x = task) |
+      grepl(pattern = input$anything_rex, x = resource) |
+      grepl(pattern = input$anything_rex, x = comments)
+    ]
   
   if (input$project_nrex != "") {
     dt <- dt[!grepl(pattern = input$project_nrex, x = project)]  
@@ -124,6 +132,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$clear_filter, {
+    updateTextInput(session = session, inputId = "anything_rex", value = "*")
     updateTextInput(session = session, inputId = "project_rex", value = "*")
     updateTextInput(session = session, inputId = "section_rex", value = "*")
     updateTextInput(session = session, inputId = "task_rex", value = "*")

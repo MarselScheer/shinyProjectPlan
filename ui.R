@@ -7,7 +7,7 @@ ui <- dashboardPage(
   dashboardSidebar(
     fileInput("file_raw_plan", label = "Upload project plan:"),
     sliderInput("sl_lower_date", "Lower date", 
-                value = lubridate::as_date(lubridate::now())-30,
+                value = lubridate::as_date(lubridate::now()) - 30,
                 min = lubridate::as_date(lubridate::now()) - 30,
                 max = lubridate::as_date(lubridate::now()) + 60),
     sliderInput("sl_upper_date", "Upper date", 
@@ -23,6 +23,7 @@ ui <- dashboardPage(
     checkboxInput("cb_withstatus_tasks", "Keep tasks with status"),
     numericInput("ni_font_size", "Font size", value = 4, min = 1, max = 10, step = 1),
     
+    textInput("anything_rex", label = "Filter (anything): ", value = "*"),
     textInput("project_rex", label = "Filter (Project): ", value = "*"),
     textInput("section_rex", label = "Filter (Section): ", value = "*"),
     textInput("task_rex", label = "Filter (Task): ", value = "*"),
